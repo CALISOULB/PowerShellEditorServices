@@ -159,7 +159,7 @@ namespace Microsoft.PowerShell.EditorServices.Services.PowerShell.Debugging
         {
             if (!IsDebugServerActive)
             {
-                _languageServer.SendNotification("powerShell/startDebugger");
+                _languageServer?.SendNotification("powerShell/startDebugger");
             }
 
             DebuggerStopped?.Invoke(this, LastStopEventArgs);

@@ -953,7 +953,8 @@ namespace Microsoft.PowerShell.EditorServices.Services
         internal async void OnDebuggerStopAsync(object sender, DebuggerStopEventArgs e)
         {
             bool noScriptName = false;
-            string localScriptPath = e.InvocationInfo.ScriptName;
+            // TODO: Why is InvocationInfo sometimes null?
+            string localScriptPath = e.InvocationInfo?.ScriptName;
 
             // If there's no ScriptName, get the "list" of the current source
             if (remoteFileManager is not null && string.IsNullOrEmpty(localScriptPath))
@@ -1013,7 +1014,8 @@ namespace Microsoft.PowerShell.EditorServices.Services
             {
                 // Augment the top stack frame with details from the stop event
 
-                if (invocationTypeScriptPositionProperty.GetValue(e.InvocationInfo) is IScriptExtent scriptExtent)
+                if (e.InvocationInfo is not null
+                    && invocationTypeScriptPositionProperty.GetValue(e.InvocationInfo) is IScriptExtent scriptExtent)
                 {
                     stackFrameDetails[0].StartLineNumber = scriptExtent.StartLineNumber;
                     stackFrameDetails[0].EndLineNumber = scriptExtent.EndLineNumber;

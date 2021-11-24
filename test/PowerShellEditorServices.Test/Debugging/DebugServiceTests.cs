@@ -53,7 +53,8 @@ namespace Microsoft.PowerShell.EditorServices.Test.Debugging
 
             debugService = new DebugService(
                 _psesHost,
-                new PowerShellDebugContext(NullLoggerFactory.Instance, null, _psesHost),
+                _psesHost.DebugContext,
+                // new PowerShellDebugContext(NullLoggerFactory.Instance, null, _psesHost),
                 null,
                 new BreakpointService(
                     NullLoggerFactory.Instance,
@@ -1029,7 +1030,15 @@ namespace Microsoft.PowerShell.EditorServices.Test.Debugging
                 debuggerStoppedQueue.Take(new CancellationTokenSource(10000).Token);
 
             // TODO: Why does the casing of the path change? Specifically the Drive letter on Windows.
-            Assert.Equal(scriptPath.ToLower(), eventArgs.ScriptPath.ToLower());
+            if (eventArgs.ScriptPath is not null)
+            {
+                Assert.Equal(scriptPath.ToLower(), eventArgs.ScriptPath.ToLower());
+            }
+            else
+            {
+                Assert.Equal("", scriptPath);
+            }
+
             if (lineNumber > -1)
             {
                 Assert.Equal(lineNumber, eventArgs.LineNumber);

@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System.Management.Automation;
+using System.Security.Cryptography;
 using Microsoft.PowerShell.EditorServices.Services.PowerShell.Runspace;
 using Microsoft.PowerShell.EditorServices.Utility;
-using System.Management.Automation;
 
 namespace Microsoft.PowerShell.EditorServices.Services.DebugAdapter
 {
@@ -46,7 +47,14 @@ namespace Microsoft.PowerShell.EditorServices.Services.DebugAdapter
         {
             get
             {
-                return this.OriginalEvent.InvocationInfo.ScriptLineNumber;
+                if (OriginalEvent.InvocationInfo is not null)
+                {
+                    return OriginalEvent.InvocationInfo.ScriptLineNumber;
+                }
+                else
+                {
+                    return 1;
+                }
             }
         }
 
@@ -57,7 +65,14 @@ namespace Microsoft.PowerShell.EditorServices.Services.DebugAdapter
         {
             get
             {
-                return this.OriginalEvent.InvocationInfo.OffsetInLine;
+                if (OriginalEvent.InvocationInfo is not null)
+                {
+                    return OriginalEvent.InvocationInfo.OffsetInLine;
+                }
+                else
+                {
+                    return 1;
+                }
             }
         }
 
@@ -99,11 +114,11 @@ namespace Microsoft.PowerShell.EditorServices.Services.DebugAdapter
             if (!string.IsNullOrEmpty(localScriptPath))
             {
                 this.ScriptPath = localScriptPath;
-                this.RemoteScriptPath = originalEvent.InvocationInfo.ScriptName;
+                this.RemoteScriptPath = originalEvent.InvocationInfo?.ScriptName;
             }
             else
             {
-                this.ScriptPath = originalEvent.InvocationInfo.ScriptName;
+                this.ScriptPath = originalEvent.InvocationInfo?.ScriptName;
             }
 
             this.OriginalEvent = originalEvent;
