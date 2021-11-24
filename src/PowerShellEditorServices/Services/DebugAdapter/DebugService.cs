@@ -45,7 +45,7 @@ namespace Microsoft.PowerShell.EditorServices.Services
         private int nextVariableId;
         private string temporaryScriptListingPath;
         private List<VariableDetailsBase> variables;
-        private VariableContainerDetails globalScopeVariables;
+        internal VariableContainerDetails globalScopeVariables;
         private VariableContainerDetails scriptScopeVariables;
         private VariableContainerDetails localScopeVariables;
         private StackFrameDetails[] stackFrameDetails;

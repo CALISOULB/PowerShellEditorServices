@@ -95,17 +95,20 @@ namespace Microsoft.PowerShell.EditorServices.Test.Debugging
                 new[] { CommandBreakpointDetails.Create("Get-Random") }).ConfigureAwait(false);
 
             Task executeTask = _psesHost.ExecutePSCommandAsync(
-                new PSCommand().AddCommand("Get-Random").AddParameter("Maximum", 100), CancellationToken.None);
+                new PSCommand().AddCommand("Get-Random").AddParameter("Maximum", 100),
+                CancellationToken.None,
+                // new PowerShellExecutionOptions { MustRunInForeground = true, ThrowOnError = false }
+                );
 
             AssertDebuggerStopped("", 1);
             debugService.Continue();
-            await executeTask.ConfigureAwait(false);
+            // await executeTask.ConfigureAwait(false);
 
             StackFrameDetails[] stackFrames = await debugService.GetStackFramesAsync().ConfigureAwait(false);
             Assert.Equal(StackFrameDetails.NoFileScriptPath, stackFrames[0].ScriptPath);
 
             VariableDetailsBase[] variables =
-                debugService.GetVariables(stackFrames[0].AutoVariables.Id);
+                debugService.GetVariables(debugService.globalScopeVariables.Id);
 
             var var = variables.FirstOrDefault(v => v.Name == "$Error");
             Assert.NotNull(var);
