@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.PowerShell.EditorServices.Services;
 using Microsoft.PowerShell.EditorServices.Services.DebugAdapter;
-using Microsoft.PowerShell.EditorServices.Services.PowerShell.Debugging;
 using Microsoft.PowerShell.EditorServices.Services.PowerShell.Execution;
 using Microsoft.PowerShell.EditorServices.Services.PowerShell.Host;
 using Microsoft.PowerShell.EditorServices.Services.TextDocument;
@@ -54,7 +53,6 @@ namespace Microsoft.PowerShell.EditorServices.Test.Debugging
             debugService = new DebugService(
                 _psesHost,
                 _psesHost.DebugContext,
-                // new PowerShellDebugContext(NullLoggerFactory.Instance, null, _psesHost),
                 null,
                 new BreakpointService(
                     NullLoggerFactory.Instance,
@@ -97,7 +95,7 @@ namespace Microsoft.PowerShell.EditorServices.Test.Debugging
                 new[] { CommandBreakpointDetails.Create("Get-Random") }).ConfigureAwait(false);
 
             Task executeTask = _psesHost.ExecutePSCommandAsync(
-                new PSCommand().AddCommand("Get-Random").AddArgument(string.Join(" ", "-Maximum", "100")), CancellationToken.None);
+                new PSCommand().AddCommand("Get-Random").AddParameter("Maximum", 100), CancellationToken.None);
 
             AssertDebuggerStopped("", 1);
             debugService.Continue();
