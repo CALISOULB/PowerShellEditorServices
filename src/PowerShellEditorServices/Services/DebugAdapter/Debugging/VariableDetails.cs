@@ -168,12 +168,21 @@ namespace Microsoft.PowerShell.EditorServices.Services.DebugAdapter
             }
 
             Type objType = value.GetType();
-            typeName = $"[{objType.FullName}]";
+
+            // This is the type format PowerShell users expect and will appear when you hover a variable name
+            typeName = '[' + value.GetType().FullName + ']';
 
             if (value is bool)
             {
                 // Set to identifier recognized by PowerShell to make setVariable from the debug UI more natural.
                 valueString = (bool) value ? "$true" : "$false";
+
+                // We need to use this "magic value" to highlight in vscode properly
+                // These "magic values" are analagous to TypeScript and are visible in VSCode here:
+                // https://github.com/microsoft/vscode/blob/57ca9b99d5b6a59f2d2e0f082ae186559f45f1d8/src/vs/workbench/contrib/debug/browser/baseDebugView.ts#L68-L78
+                // numbers and strings so far seem to get detected properly be serialization and the original .NET type
+                // is preserved
+                typeName = "boolean";
             }
             else if (isExpandable)
             {
