@@ -170,7 +170,7 @@ namespace Microsoft.PowerShell.EditorServices.Services.DebugAdapter
             Type objType = value.GetType();
 
             // This is the type format PowerShell users expect and will appear when you hover a variable name
-            typeName = '[' + value.GetType().FullName + ']';
+            typeName = '[' + objType.FullName + ']';
 
             if (value is bool)
             {
